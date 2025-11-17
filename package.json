@@ -1,0 +1,25 @@
+{
+  "name": "community-support-tracker",
+  "version": "1.0.0",
+  "description": "Sharhan: Donation Tracker Component\r Rudra: Volunteer Hours Tracker Component\r Thea: Event Signup Component",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sharhan-rrc/Community-Support-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Sharhan-rrc/Community-Support-Tracker/issues"
+  },
+  "homepage": "https://github.com/Sharhan-rrc/Community-Support-Tracker#readme",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jsdom": "^24.1.3"
+  }
+}
