@@ -4,7 +4,9 @@
   "description": "Sharhan: Donation Tracker Component\r Rudra: Volunteer Hours Tracker Component\r Thea: Event Signup Component",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --verbose --coverage",
+    "test:watch": "jest --watch",
+    "test:donation": "jest tests/donation-tracker.test.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +23,13 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "jsdom": "^24.1.3"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/**/*.test.js"
+    ]
   }
 }
