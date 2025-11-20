@@ -5,42 +5,28 @@
 const fs = require('fs');
 const path = require('path');
 
-// Load the HTML file
-const html = fs.readFileSync(
-    path.resolve(__dirname, '../donation-tracker.html'),
-    'utf8'
-);
-
 describe('Donation Tracker - Stage One Tests', () => {
-    let donationTracker;
+    let donationModule;
     
     beforeEach(() => {
-        // Set up DOM
-        document.documentElement.innerHTML = html;
-        
-        // Load the JavaScript module
-        const scriptContent = fs.readFileSync(
-            path.resolve(__dirname, '../js/donation-tracker.js'),
+        // Load HTML
+        const html = fs.readFileSync(
+            path.resolve(__dirname, '../donation-tracker.html'),
             'utf8'
         );
+        document.documentElement.innerHTML = html;
         
-        // Execute script in test environment
-        eval(scriptContent);
+        // Clear module cache to get fresh instance
+        jest.resetModules();
         
-        // Get exported functions
-        donationTracker = {
-            validateForm,
-            collectFormData,
-            showError,
-            clearErrors
-        };
+        // Import module
+        donationModule = require('../JS/donation-tracker.js');
         
-        // Initialize tempDonationData
-        global.tempDonationData = {};
+        // Reset tempDonationData
+        donationModule.setTempDonationData({});
     });
 
     afterEach(() => {
-        // Clean up
         document.documentElement.innerHTML = '';
     });
 
@@ -56,14 +42,21 @@ describe('Donation Tracker - Stage One Tests', () => {
             
             // Trigger form submission
             const form = document.getElementById('donationForm');
-            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+            const submitEvent = new Event('submit', { 
+                bubbles: true, 
+                cancelable: true 
+            });
             form.dispatchEvent(submitEvent);
             
+            // Get data from module
+            const data = donationModule.getTempDonationData();
+            
             // Check if data was stored
-            expect(tempDonationData.charityName).toBe('Red Cross');
-            expect(tempDonationData.donationAmount).toBe(500);
-            expect(tempDonationData.donationDate).toBe('2024-01-15');
-            expect(tempDonationData.donorComment).toBe('Great cause!');
+            expect(data.charityName).toBe('Red Cross');
+            expect(data.donationAmount).toBe(500);
+            expect(data.donationDate).toBe('2024-01-15');
+            expect(data.donorComment).toBe('Great cause!');
+            expect(data.timestamp).toBeTruthy();
         });
 
         test('submitting invalid form shows error messages in DOM', () => {
@@ -74,7 +67,10 @@ describe('Donation Tracker - Stage One Tests', () => {
             
             // Trigger form submission
             const form = document.getElementById('donationForm');
-            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+            const submitEvent = new Event('submit', { 
+                bubbles: true, 
+                cancelable: true 
+            });
             form.dispatchEvent(submitEvent);
             
             // Check if error messages are displayed
@@ -95,7 +91,10 @@ describe('Donation Tracker - Stage One Tests', () => {
             
             // Submit form
             const form = document.getElementById('donationForm');
-            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+            const submitEvent = new Event('submit', { 
+                bubbles: true, 
+                cancelable: true 
+            });
             form.dispatchEvent(submitEvent);
             
             // Check success message visibility
@@ -104,7 +103,7 @@ describe('Donation Tracker - Stage One Tests', () => {
         });
     });
 
-    // ===== UNIT TESTS =====
+    // ===== UNIT TESTS - VALIDATION =====
     
     describe('Unit Tests - Validation', () => {
         test('identifies empty charity name field', () => {
@@ -112,7 +111,7 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationAmount').value = '100';
             document.getElementById('donationDate').value = '2024-01-01';
             
-            const isValid = donationTracker.validateForm();
+            const isValid = donationModule.validateForm();
             
             expect(isValid).toBe(false);
         });
@@ -122,7 +121,7 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationAmount').value = '';
             document.getElementById('donationDate').value = '2024-01-01';
             
-            const isValid = donationTracker.validateForm();
+            const isValid = donationModule.validateForm();
             
             expect(isValid).toBe(false);
         });
@@ -132,7 +131,7 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationAmount').value = '-50';
             document.getElementById('donationDate').value = '2024-01-01';
             
-            const isValid = donationTracker.validateForm();
+            const isValid = donationModule.validateForm();
             
             expect(isValid).toBe(false);
         });
@@ -142,7 +141,7 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationAmount').value = 'abc';
             document.getElementById('donationDate').value = '2024-01-01';
             
-            const isValid = donationTracker.validateForm();
+            const isValid = donationModule.validateForm();
             
             expect(isValid).toBe(false);
         });
@@ -152,7 +151,7 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationAmount').value = '200';
             document.getElementById('donationDate').value = '';
             
-            const isValid = donationTracker.validateForm();
+            const isValid = donationModule.validateForm();
             
             expect(isValid).toBe(false);
         });
@@ -162,12 +161,14 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationAmount').value = '750.50';
             document.getElementById('donationDate').value = '2024-03-15';
             
-            const isValid = donationTracker.validateForm();
+            const isValid = donationModule.validateForm();
             
             expect(isValid).toBe(true);
         });
     });
 
+    // ===== UNIT TESTS - DATA PROCESSING =====
+    
     describe('Unit Tests - Data Processing', () => {
         test('collectFormData returns correct data object with valid inputs', () => {
             document.getElementById('charityName').value = 'Doctors Without Borders';
@@ -175,13 +176,16 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationDate').value = '2024-04-10';
             document.getElementById('donorComment').value = 'Keep up the great work!';
             
-            donationTracker.collectFormData();
+            donationModule.collectFormData();
             
-            expect(tempDonationData.charityName).toBe('Doctors Without Borders');
-            expect(tempDonationData.donationAmount).toBe(1250.75);
-            expect(tempDonationData.donationDate).toBe('2024-04-10');
-            expect(tempDonationData.donorComment).toBe('Keep up the great work!');
-            expect(tempDonationData.timestamp).toBeTruthy();
+            // Get data from module
+            const data = donationModule.getTempDonationData();
+            
+            expect(data.charityName).toBe('Doctors Without Borders');
+            expect(data.donationAmount).toBe(1250.75);
+            expect(data.donationDate).toBe('2024-04-10');
+            expect(data.donorComment).toBe('Keep up the great work!');
+            expect(data.timestamp).toBeTruthy();
         });
 
         test('handles empty comment field with default message', () => {
@@ -190,9 +194,12 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationDate').value = '2024-05-01';
             document.getElementById('donorComment').value = '';
             
-            donationTracker.collectFormData();
+            donationModule.collectFormData();
             
-            expect(tempDonationData.donorComment).toBe('No comment provided');
+            // Get data from module
+            const data = donationModule.getTempDonationData();
+            
+            expect(data.donorComment).toBe('No comment provided');
         });
 
         test('correctly parses donation amount as number', () => {
@@ -200,16 +207,21 @@ describe('Donation Tracker - Stage One Tests', () => {
             document.getElementById('donationAmount').value = '999.99';
             document.getElementById('donationDate').value = '2024-06-01';
             
-            donationTracker.collectFormData();
+            donationModule.collectFormData();
             
-            expect(typeof tempDonationData.donationAmount).toBe('number');
-            expect(tempDonationData.donationAmount).toBe(999.99);
+            // Get data from module
+            const data = donationModule.getTempDonationData();
+            
+            expect(typeof data.donationAmount).toBe('number');
+            expect(data.donationAmount).toBe(999.99);
         });
     });
 
+    // ===== UNIT TESTS - ERROR HANDLING =====
+    
     describe('Unit Tests - Error Handling', () => {
         test('showError displays error message for specific field', () => {
-            donationTracker.showError('charityName', 'This field is required');
+            donationModule.showError('charityName', 'This field is required');
             
             const errorElement = document.getElementById('charityNameError');
             const formGroup = document.getElementById('charityName').closest('.form-group');
@@ -220,11 +232,11 @@ describe('Donation Tracker - Stage One Tests', () => {
 
         test('clearErrors removes all error messages and styling', () => {
             // Add some errors first
-            donationTracker.showError('charityName', 'Error 1');
-            donationTracker.showError('donationAmount', 'Error 2');
+            donationModule.showError('charityName', 'Error 1');
+            donationModule.showError('donationAmount', 'Error 2');
             
             // Clear errors
-            donationTracker.clearErrors();
+            donationModule.clearErrors();
             
             const errorGroups = document.querySelectorAll('.form-group.error');
             expect(errorGroups.length).toBe(0);

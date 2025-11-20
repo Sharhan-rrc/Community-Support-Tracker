@@ -1,12 +1,27 @@
 // Temporary data storage (Stage One requirement)
 let tempDonationData = {};
 
-// Get form elements
-const donationForm = document.getElementById('donationForm');
-const successMessage = document.getElementById('successMessage');
+// Initialize when DOM is ready. Attach immediately if DOM already loaded
+if (typeof document !== 'undefined') {
+    const init = function() {
+        const donationForm = document.getElementById('donationForm');
+        if (donationForm) {
+            donationForm.addEventListener('submit', handleFormSubmit);
+        }
+    };
 
-// Form submission handler
-donationForm.addEventListener('submit', function(e) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+}
+
+/**
+ * Handles form submission
+ * @param {Event} e - The submit event
+ */
+function handleFormSubmit(e) {
     e.preventDefault();
     
     // Clear previous errors
@@ -21,12 +36,15 @@ donationForm.addEventListener('submit', function(e) {
         showSuccessMessage();
         
         // Reset form
-        donationForm.reset();
+        const form = document.getElementById('donationForm');
+        if (form) {
+            form.reset();
+        }
         
         // Log data for verification (Stage One requirement)
         console.log('Donation Data Stored:', tempDonationData);
     }
-});
+}
 
 /**
  * Validates all form inputs
@@ -37,13 +55,17 @@ function validateForm() {
     
     // Validate charity name
     const charityName = document.getElementById('charityName');
-    if (!charityName.value.trim()) {
+    if (!charityName || !charityName.value.trim()) {
         showError('charityName', 'Charity name is required');
         isValid = false;
     }
     
     // Validate donation amount
     const donationAmount = document.getElementById('donationAmount');
+    if (!donationAmount) {
+        return false;
+    }
+    
     const amount = parseFloat(donationAmount.value);
     if (!donationAmount.value || amount <= 0 || isNaN(amount)) {
         showError('donationAmount', 'Please enter a valid donation amount');
@@ -52,7 +74,7 @@ function validateForm() {
     
     // Validate date
     const donationDate = document.getElementById('donationDate');
-    if (!donationDate.value) {
+    if (!donationDate || !donationDate.value) {
         showError('donationDate', 'Date is required');
         isValid = false;
     }
@@ -64,11 +86,16 @@ function validateForm() {
  * Collects form data and stores in temporary object
  */
 function collectFormData() {
+    const charityName = document.getElementById('charityName');
+    const donationAmount = document.getElementById('donationAmount');
+    const donationDate = document.getElementById('donationDate');
+    const donorComment = document.getElementById('donorComment');
+    
     tempDonationData = {
-        charityName: document.getElementById('charityName').value.trim(),
-        donationAmount: parseFloat(document.getElementById('donationAmount').value),
-        donationDate: document.getElementById('donationDate').value,
-        donorComment: document.getElementById('donorComment').value.trim() || 'No comment provided',
+        charityName: charityName ? charityName.value.trim() : '',
+        donationAmount: donationAmount ? parseFloat(donationAmount.value) : 0,
+        donationDate: donationDate ? donationDate.value : '',
+        donorComment: donorComment && donorComment.value.trim() ? donorComment.value.trim() : 'No comment provided',
         timestamp: new Date().toISOString()
     };
 }
@@ -79,11 +106,18 @@ function collectFormData() {
  * @param {string} message - The error message to display
  */
 function showError(fieldId, message) {
-    const formGroup = document.getElementById(fieldId).closest('.form-group');
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    
+    const formGroup = field.closest('.form-group');
+    if (!formGroup) return;
+    
     const errorElement = formGroup.querySelector('.error-message');
     
     formGroup.classList.add('error');
-    errorElement.textContent = message;
+    if (errorElement) {
+        errorElement.textContent = message;
+    }
 }
 
 /**
@@ -104,19 +138,42 @@ function clearErrors() {
  * Shows success message after form submission
  */
 function showSuccessMessage() {
-    successMessage.style.display = 'block';
-    
-    // Hide message after 3 seconds
-    setTimeout(() => {
-        successMessage.style.display = 'none';
-    }, 3000);
+    const successMessage = document.getElementById('successMessage');
+    if (successMessage) {
+        successMessage.style.display = 'block';
+        
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+        }, 3000);
+    }
 }
 
-// Export functions for testing
+/**
+ * Gets the current temporary donation data
+ * @returns {object} - The temporary donation data
+ */
+function getTempDonationData() {
+    return tempDonationData;
+}
+
+/**
+ * Sets the temporary donation data (for testing purposes)
+ * @param {object} data - The data to set
+ */
+function setTempDonationData(data) {
+    tempDonationData = data;
+}
+
+// Export functions for testing (Node.js environment)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         validateForm,
         collectFormData,
-        tempDonationData
+        showError,
+        clearErrors,
+        showSuccessMessage,
+        getTempDonationData,
+        setTempDonationData,
+        handleFormSubmit
     };
 }
