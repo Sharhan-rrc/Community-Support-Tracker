@@ -70,7 +70,7 @@ body {
 }
 
 .main-nav a.active {
-    background-color: #667eea;
+    background-color: #4c51bf;
     color: white;
 }
 
@@ -109,6 +109,17 @@ body {
 .site-footer p {
     font-size: 0.9rem;
     opacity: 0.8;
+}
+
+.site-footer a {
+    color: #e0e6ed;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.site-footer a:hover {
+    color: #ffffff;
+    text-decoration: underline;
 }
 
 /* ===== RESPONSIVE ===== */
