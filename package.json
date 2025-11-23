@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --verbose --coverage",
     "test:watch": "jest --watch",
-    "test:donation": "jest tests/donation-tracker.test.js"
+    "test:donation": "jest tests/donation-tracker.test.js",
+    "test:volunteer": "jest tests/volunteer-hours.test.js"
   },
   "repository": {
     "type": "git",
@@ -27,12 +28,11 @@
     "jsdom": "^24.1.3"
   },
   "jest": {
-  "testEnvironment": "jest-environment-jsdom",
-  "coverageDirectory": "coverage",
-  "collectCoverageFrom": [
-    "js/**/*.js",
-    "!js/**/*.test.js"
-  ]
-}
-
+    "testEnvironment": "jest-environment-jsdom",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/**/*.test.js"
+    ]
+  }
 }

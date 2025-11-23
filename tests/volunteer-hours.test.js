@@ -20,7 +20,7 @@ describe('Volunteer Hours Tracker - Stage One Tests', () => {
         jest.resetModules();
         
         // Import module
-        volunteerModule = require('../js/volunteer-hours.js');
+        volunteerModule = require('../JS/volunteer-hours.js');
         
         // Reset tempVolunteerData
         volunteerModule.setTempVolunteerData({});
