@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Event Signup - Community Support Tracker</title>
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="stylesheet" href="css/event-signup.css"> 
+    </head>
+    <body>
+        <!-- Header (shared component) -->
+        <header class="site-header">
+            <div class="container">
+                <h1 class="logo">PiXELL River Financial</h1>
+                <p class="tagline">Community Support Tracker</p>
+            </div>
+        </header> 
+
+        <!-- Navigation (shared component) -->
+        <nav class="main-nav">
+            <div class="container">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="donation-tracker.html">Donation Tracker</a></li>
+                    <li><a href="volunteer-hours.html">Volunteer Hours</a></li>
+                    <li><a href="event-signup.html" class="active">Event Signup</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container main-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2>Event Signup</h2>
+                <p>Register PiXELL River Financial for community events and activities</p>
+            </div>
+
+            <!-- Event Signup Form Section -->
+            <section class="form-section">
+                <div class="form-container">
+                    <h3>Sign Up for an Event</h3>
+                    <p class="form-description">Complete the form below to register for a community event.</p>
+
+                    <form id="event-signup-form" novalidate>
+                        <!-- Event Name -->
+                        <div class="form-group">
+                            <label for="event-name">Event Name <span class="required">*</span></label>
+                            <input 
+                                type="text" 
+                                id="event-name" 
+                                name="eventName"
+                                placeholder="Enter the name of the event"
+                                required
+                            >
+                            <span class="error-message" id="event-name-error"></span>
+                        </div>
+
+                        <!-- Company Representative's Name -->
+                        <div class="form-group">
+                            <label for="representative-name">Company Representative's Name <span class="required">*</span></label>
+                            <input 
+                                type="text" 
+                                id="representative-name" 
+                                name="representativeName"
+                                placeholder="Enter representative's full name"
+                                required
+                            >
+                            <span class="error-message" id="representative-name-error"></span>
+                        </div>
+
+                        <!-- Representative's Email -->
+                        <div class="form-group">
+                            <label for="representative-email">Representative's Email <span class="required">*</span></label>
+                            <input 
+                                type="email" 
+                                id="representative-email" 
+                                name="representativeEmail"
+                                placeholder="representative@pixellriver.com"
+                                required
+                            >
+                            <span class="error-message" id="representative-email-error"></span>
+                        </div>
+
+                        <!-- Role Selection -->
+                        <div class="form-group">
+                            <label for="role-selection">Role at Event <span class="required">*</span></label>
+                            <select id="role-selection" name="role" required>
+                                <option value="">Select a role</option>
+                                <option value="sponsor">Sponsor</option>
+                                <option value="participant">Participant</option>
+                                <option value="organizer">Organizer</option>
+                                <option value="volunteer">Volunteer</option>
+                            </select>
+                            <span class="error-message" id="role-selection-error"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="submit-btn">Sign Up for Event</button>
+                    </form>
+
+                    <!-- Success Message -->
+                    <div id="success-message" class="success-message hidden">
+                        <div class="success-icon">✓</div>
+                        <h4>Event Signup Successful!</h4>
+                        <p>Your registration has been recorded.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Event Signups List -->
+            <section class="signups-section">
+                <h3>Registered Events</h3>
+                <div id="signups-list" class="signups-list">
+                    <p class="empty-state">No event signups yet. Be the first to register!</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer (shared component) -->
+        <footer class="site-footer">
+            <div class="container">
+                <p>&copy; 2024 PiXELL River Financial. Making a difference in our communities.</p>
+            </div>
+        </footer>
+
+        <script src="js/event-signup.js"></script> 
+    </body>
+</html>
