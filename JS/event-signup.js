@@ -135,8 +135,7 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         validateRequiredField,
         validateEmail,
-        processFormData,
-        validateForm,
+        validateForm, 
 
 
     };
