@@ -7,7 +7,8 @@
     "test": "jest --verbose --coverage",
     "test:watch": "jest --watch",
     "test:donation": "jest tests/donation-tracker.test.js",
-    "test:volunteer": "jest tests/volunteer-hours.test.js"
+    "test:volunteer": "jest tests/volunteer-hours.test.js",
+    "test:event": "jest tests/event-signup.test.js"   
   },
   "repository": {
     "type": "git",
